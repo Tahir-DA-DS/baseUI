@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Manage Projects</title>
+  <!-- Bootstrap CSS CDN -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Optional Custom Styles -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="index.html">Basecamp</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ms-auto">
+        <!-- <li class="nav-item"><a class="nav-link" href="users.html">Users</a></li> -->
+        <li class="nav-item"><a class="nav-link" href="admin.html">Admin Dashboard</a></li>
+        <li class="nav-item"><a class="nav-link" href="projects.html">Projects</a></li>
+        <li class="nav-item"><a class="nav-link" id="sign-out-btn" href="#">Sign Out</a></li>
+      </ul>
+    </div>
+  </nav>
+  <div class="container mt-5">
+    <h1>Projects</h1>
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProjectModal">Add Project</button>
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>User ID</th>
+          <th>Attachment</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="project-table-body">
+        <!-- Dynamic rows will be injected here by JavaScript -->
+      </tbody>
+    </table>
+
+    <!-- Threads Section -->
+    <h3>Threads</h3>
+    <button class="btn btn-info mb-2" id="createThreadBtn">New Thread</button>
+    <ul class="list-group" id="threadList"></ul>
+    
+  </div>
+
+   <!-- Add Project Modal -->
+   <!-- <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProjectModalLabel">Add New Project</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="add-project-form">
+            <div class="mb-3">
+              <label for="project-name" class="form-label">Project Name</label>
+              <input type="text" class="form-control" id="project-name" required>
+            </div>
+            <div class="mb-3">
+              <label for="project-description" class="form-label">Project Description</label>
+              <textarea class="form-control" id="project-description" rows="3" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Project</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div> -->
+  <div class="modal fade" id="addProjectModal" tabindex="-1" aria-labelledby="addProjectModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="addProjectModalLabel">Create New Project</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="projectForm">
+            <div class="mb-3">
+              <label for="projectName" class="form-label">Project Name</label>
+              <input type="text" id="projectName" class="form-control" required>
+            </div>
+            <div class="mb-3">
+              <label for="projectDescription" class="form-label">Description</label>
+              <textarea id="projectDescription" class="form-control" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="fileUpload" class="form-label">Upload Attachment (Optional)</label>
+              <input type="file" id="fileUpload" class="form-control">
+            </div>
+            <button type="submit" class="btn btn-success">Create Project</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<!-- Select Project Modal -->
+<div class="modal fade" id="selectProjectModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Select a Project to Edit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <select id="edit-project-select" class="form-select"></select>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" onclick="populateEditForm()">Edit Project</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!-- Edit Project Modal -->
+<div class="modal fade" id="editProjectModal" tabindex="-1" aria-labelledby="editProjectModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editProjectModalLabel">Edit Project</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form id="edit-project-form" onsubmit="event.preventDefault(); saveProjectChanges();">
+          <!-- Hidden input to store project ID -->
+          <input type="hidden" id="edit-project-id">
+          <div class="mb-3">
+            <label for="edit-project-name" class="form-label">Project Name</label>
+            <input type="text" class="form-control" id="edit-project-name" required>
+          </div>
+          <div class="mb-3">
+            <label for="edit-project-description" class="form-label">Project Description</label>
+            <textarea class="form-control" id="edit-project-description" rows="3" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+  <!-- Bootstrap JS Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="js/projects.js"></script>
+  <script src="js/auth.js"></script>
+</body>
+</html>
