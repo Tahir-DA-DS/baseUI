@@ -75,11 +75,19 @@ async function loadProjects() {
         projectTable.innerHTML = '';
 
         projects.forEach(project => {
+          const fileUrl = new URL(project.filepath, API_BASE_URL).href;
+          const attachmentLink = project.attachments && project.attachments.length > 0
+    ? project.attachments.map(att => 
+        `<a href="${API_BASE_URL}/${att.filepath}" target="_blank">${att.filename}</a>`
+      ).join(", ")
+    : "No Attachment";
             const row = `
                 <tr>
-                    <td>${project.id}</td>
+                     <td>${project.id}</td>
                     <td>${project.name}</td>
                     <td>${project.description}</td>
+                    <td>${project.userId}</td>
+                    <td>${attachmentLink}</td>
                     <td>
                       <button class="btn btn-warning btn-sm" onclick="loadProjectDetails(${project.id})">Edit</button>
                         <button class="btn btn-danger btn-sm" onclick="deleteProject(${project.id})">Delete</button>

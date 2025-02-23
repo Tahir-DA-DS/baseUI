@@ -57,9 +57,12 @@ async function fetchProjects() {
       const tableBody = document.getElementById("project-table-body");
       tableBody.innerHTML = ""; 
       data.forEach(project => {
-        const attachmentLink = project.filename
-          ? `<a href="${API_BASE_URL}/${project.filepath}" target="_blank">${project.filename}</a>`
-          : "No Attachment";
+        const fileUrl = new URL(project.filepath, API_BASE_URL).href;
+        const attachmentLink = project.attachments && project.attachments.length > 0
+  ? project.attachments.map(att => 
+      `<a href="${API_BASE_URL}/${att.filepath}" target="_blank">${att.filename}</a>`
+    ).join(", ")
+  : "No Attachment";
 
         tableBody.innerHTML += `
           <tr>
