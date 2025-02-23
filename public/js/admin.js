@@ -49,7 +49,7 @@ function loadUsers() {
                   <td>${user.email}</td>
                   <td>${user.isAdmin ? "Admin" : "User"}</td>
                   <td>
-                      ${!user.IsAdmin ? 
+                      ${!user.isAdmin ? 
                           `<button class="btn btn-success btn-sm" onclick="promoteToAdmin(${user.id})">Make Admin</button>` : 
                           `<button class="btn btn-warning btn-sm" onclick="demoteAdmin(${user.id})">Remove Admin</button>`
                       }
